@@ -1,0 +1,30 @@
+<html>
+<head>
+  <style>
+    body { 
+      min-width: 420px; 
+      overflow-x: hidden; 
+      font-family: Arial, sans-serif; 
+      font-size: 12px; 
+    }
+    input, textarea { width: 420px; }
+    input#save { font-weight: bold; width: auto; }
+  </style>
+  <script>
+    function save(form) {
+      window.localStorage.url = document.getElementById('url').value;
+      return false;
+    }
+    window.onload = function() {
+      document.getElementById('url').value = window.localStorage.url;
+    }      
+  </script>
+</head>
+<body>
+  <form id="config" onsubmit="save(this); return false;">
+    <p><label for="url">Url</label><br />
+    <input type="text" id="url" name="url" size="50" value="" /></p>
+    <p><input id="save" type="submit" value="Save" /></p>
+  </form>
+</body>
+</html>

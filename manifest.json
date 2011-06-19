@@ -1,0 +1,16 @@
+{
+  "name": "Statusdashboard",
+  "version": "0.1",
+  "description": "Statusdashboard Chrome Extension.",
+  "icons": { "64": "images/default_icon_64.png", "128": "images/default_icon_128.png" },
+  "background_page": "background.html",
+  "permissions": [
+    "notifications",
+    "http://*/"
+  ],
+  "browser_action": {
+    "default_icon": "images/default_icon_64.png",
+    "popup": "popup.html"
+  }
+}
+
