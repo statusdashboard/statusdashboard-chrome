@@ -19,7 +19,8 @@
         chrome.browserAction.setBadgeText({text:count});
         if (window.webkitNotifications.checkPermission() == 0) {
           if (countOld != count) {
-            var notification = webkitNotifications.createNotification('images/default_icon_128.png', 'Service problems', count);
+            var msg = 'Up: ' + msg.data.summarize.up + ', ' + 'Critical: ' + msg.data.summarize.critical + ', Down: ' + msg.data.summarize.down + ', Unknown: ' + msg.data.summarize.unknown;
+            var notification = webkitNotifications.createNotification('images/default_icon_128.png', 'Service problems', msg);
       		  notification.show();
             setTimeout(function() { notification.cancel(); }, 3000);
             countOld = count;
