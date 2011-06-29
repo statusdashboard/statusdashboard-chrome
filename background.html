@@ -3,30 +3,45 @@
   <script src="js/socket.io.js"></script>
 
   <script>
-    var socket = io.connect(localStorage["urlApp"]);
-    var countOld = 0;
+      function socketIOConnection() {
+        var value = localStorage["urlApp"];
+        var socket;
+        if (null != value) {
+          if (null != socket) {
+            alert('disconnect'); 
+            socket.disconnect();
+            socket = null;
+          }
+          socket = io.connect(localStorage["urlApp"], {transports: ['xhr-polling']});
+          var countOld = 0;
 
-    chrome.browserAction.setBadgeText({text:"?"});
+          chrome.browserAction.setBadgeText({text:"?"});
 
-    socket.on('connect', function() {
-      chrome.browserAction.setBadgeText({text:"..."});
-    });
-    socket.on('status', function (status) {
-      var count = (status.summarize.critical + status.summarize.down + status.summarize.unknown).toString();
-      chrome.browserAction.setBadgeText({text:count});
-      if (window.webkitNotifications.checkPermission() == 0) {
-        if (countOld != count) {
-          var msg = 'Up: ' + status.summarize.up + ', ' + 'Critical: ' + status.summarize.critical + ', Down: ' + status.summarize.down + ', Unknown: ' + status.summarize.unknown;
-          var notification = webkitNotifications.createNotification('images/default_icon_128.png', 'Service problems', msg);
-    		  notification.show();
-          setTimeout(function() { notification.cancel(); }, 3000);
-          countOld = count;
+          socket.on('connect', function() {
+            chrome.browserAction.setBadgeText({text:"..."});
+          });
+          socket.on('status', function (status) {
+            var count = (status.summarize.critical + status.summarize.down + status.summarize.unknown).toString();
+            chrome.browserAction.setBadgeText({text:count});
+            if (window.webkitNotifications.checkPermission() == 0) {
+              if (countOld != count) {
+                var msg = 'Up: ' + status.summarize.up + ', ' + 'Critical: ' + status.summarize.critical + ', Down: ' + status.summarize.down + ', Unknown: ' + status.summarize.unknown;
+                var notification = webkitNotifications.createNotification('images/default_icon_128.png', 'Service problems', msg);
+                notification.show();
+                setTimeout(function() { notification.cancel(); }, 3000);
+                countOld = count;
+              }
+            } else {
+              window.webkitNotifications.requestPermission();
+            }
+          });
+        } else {
+          chrome.browserAction.setBadgeText({text:"url?"});
         }
-      } else {
-        window.webkitNotifications.requestPermission();
       }
-    });
   </script>
 </head>
+<body onload="socketIOConnection()">
+</body>
 </html>
 

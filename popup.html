@@ -13,7 +13,7 @@
   <script type="text/javascript">
     function saveUrlApp() {
       localStorage["urlApp"] = document.getElementById("urlApp").value;
-      // chrome.extension.getBackgroundPage();
+      chrome.extension.getBackgroundPage().socketIOConnection();
       close();
     }
     function restoreUrlApp() {
