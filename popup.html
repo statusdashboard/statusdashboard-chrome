@@ -10,21 +10,25 @@
     input, textarea { width: 420px; }
     input#save { font-weight: bold; width: auto; }
   </style>
-  <script>
-    function save(form) {
-      window.localStorage.url = document.getElementById('url').value;
-      return false;
+  <script type="text/javascript">
+    function saveUrlApp() {
+      localStorage["urlApp"] = document.getElementById("urlApp").value;
+      // chrome.extension.getBackgroundPage();
+      close();
     }
-    window.onload = function() {
-      document.getElementById('url').value = window.localStorage.url;
+    function restoreUrlApp() {
+      var value = localStorage["urlApp"];
+      if (null != value) {
+        document.getElementById("urlApp").value = value;
+      }
     }      
   </script>
 </head>
-<body>
-  <form id="config" onsubmit="save(this); return false;">
+<body onload="restoreUrlApp()">
+  <form>
     <p><label for="url">Url</label><br />
-    <input type="text" id="url" name="url" size="50" value="" /></p>
-    <p><input id="save" type="submit" value="Save" /></p>
+    <input type="text" id="urlApp" name="urlApp" size="50" value="" /></p>
   </form>
+  <p><button onClick="saveUrlApp();">Save</button></p>
 </body>
 </html>

@@ -3,9 +3,7 @@
   <script src="js/socket.io.js"></script>
 
   <script>
-    var host = localStorage.host;
-    var socket = new io.Socket('statusdashboard.nodester.com');
-    socket.connect();
+    var socket = io.connect(localStorage["urlApp"]);
     var countOld = 0;
 
     chrome.browserAction.setBadgeText({text:"?"});
@@ -13,21 +11,19 @@
     socket.on('connect', function() {
       chrome.browserAction.setBadgeText({text:"..."});
     });
-    socket.on('message', function (msg) {
-      if (msg.type == 'status') {
-        var count = (msg.data.summarize.critical + msg.data.summarize.down + msg.data.summarize.unknown).toString();
-        chrome.browserAction.setBadgeText({text:count});
-        if (window.webkitNotifications.checkPermission() == 0) {
-          if (countOld != count) {
-            var msg = 'Up: ' + msg.data.summarize.up + ', ' + 'Critical: ' + msg.data.summarize.critical + ', Down: ' + msg.data.summarize.down + ', Unknown: ' + msg.data.summarize.unknown;
-            var notification = webkitNotifications.createNotification('images/default_icon_128.png', 'Service problems', msg);
-      		  notification.show();
-            setTimeout(function() { notification.cancel(); }, 3000);
-            countOld = count;
-          }
-        } else {
-          window.webkitNotifications.requestPermission();
+    socket.on('status', function (status) {
+      var count = (status.summarize.critical + status.summarize.down + status.summarize.unknown).toString();
+      chrome.browserAction.setBadgeText({text:count});
+      if (window.webkitNotifications.checkPermission() == 0) {
+        if (countOld != count) {
+          var msg = 'Up: ' + status.summarize.up + ', ' + 'Critical: ' + status.summarize.critical + ', Down: ' + status.summarize.down + ', Unknown: ' + status.summarize.unknown;
+          var notification = webkitNotifications.createNotification('images/default_icon_128.png', 'Service problems', msg);
+    		  notification.show();
+          setTimeout(function() { notification.cancel(); }, 3000);
+          countOld = count;
         }
+      } else {
+        window.webkitNotifications.requestPermission();
       }
     });
   </script>
